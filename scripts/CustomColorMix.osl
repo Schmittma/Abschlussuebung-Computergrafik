@@ -1,0 +1,27 @@
+float rgba2gray(color RGBA)
+{
+    return ((RGBA[0] + RGBA[1] + RGBA[2]) / 3.0) * RGBA[3];
+}
+
+// This shader takes the input of 2 images. When the given height map 
+// exceeds the threshold, given by "MinimumHeight" Color1 shall be used as output
+// otherwise Color2 shall be used as output.
+
+// This is a special script for the given assignment, since the heightmap and the minimum height
+// need to be included in the decision whether one shader over the other should be used.
+
+shader CustomColorMix(
+        color Color1 = 0.0,
+        color Color2 = 0.0,
+        color HeightMap  = 0.0,
+        float MinimumHeight = 0.0,
+        output color Color = 0.0,
+    )
+{   
+    if(rgba2gray(HeightMap) > MinimumHeight){
+        Color = Color1;
+    }
+    else{
+        Color = Color2;
+    } 
+}
