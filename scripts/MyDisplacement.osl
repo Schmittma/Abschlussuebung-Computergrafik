@@ -1,0 +1,20 @@
+// code of internal Displacement Shader: https://developer.blender.org/diffusion/B/browse/master/intern/cycles/kernel/shaders/node_displacement.osl
+// Osl Specification: https://github.com/imageworks/OpenShadingLanguage/blob/master/src/doc/osl-languagespec.pdf
+
+// https://github.com/imageworks/OpenShadingLanguage/blob/master/src/shaders/stdosl.h
+#include "stdosl.h"
+
+float rgba2gray(color RGBA)
+{
+    return ((RGBA[0] + RGBA[1] + RGBA[2]) / 3.0) * RGBA[3];
+}
+
+shader MyDisplacement(
+        color Color = 0.0,
+        normal Normal = 0.0,
+        float Scale = 0.05,
+        output vector Displacement = 0.0,
+    )
+{   
+    Displacement = normalize(Normal) * rgba2gray(Color) * Scale;
+}

@@ -1,0 +1,14 @@
+shader MyLambertShading(
+    normal Normal = N,
+    color DiffusColor = color(0,0,0),
+    vector LightSourceWC = 0.0,
+    color AmbientColor = 0.0,
+    output color Color = color(0,0,0)
+    )
+{
+    point CurrentPointWC = transform("world", P);
+    vector LightVector = LightSourceWC - CurrentPointWC;
+    
+    color LambertColor = (DiffusColor / M_PI) * max(dot(normalize(Normal), normalize(LightVector)), 0);
+    Color = AmbientColor + LambertColor;
+}

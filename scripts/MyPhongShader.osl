@@ -1,0 +1,22 @@
+shader MyPhongShading(
+    normal Normal = N,
+    color DiffusColor = color(0,0,0),
+    color AmbientColor = 0.0,
+    color SpecularColor = 0.0,
+    vector LightSourceWC = 0.0,
+    float ShineSize = 0.5,
+    output color Color = color(0,0,0)
+    )
+{
+    vector NormalWorld = normalize(transform("world", Normal));
+    point CurrentPointWC = transform("world", P);
+    vector LightVector = normalize(LightSourceWC - CurrentPointWC);
+    vector h = (I + LightVector) / (length(I + LightVector));
+    
+    color LambertColor = (DiffusColor / M_PI) * max(dot(normalize(NormalWorld), normalize(LightVector)), 0);
+    
+    color ks = SpecularColor * (ShineSize + 8) / (8 * M_PI);
+    color SpecularLight = ks * pow(max(dot(h , NormalWorld), 0), ShineSize); 
+    
+    Color = AmbientColor + LambertColor + SpecularLight;
+}
