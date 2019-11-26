@@ -1,0 +1,38 @@
+#include "stdosl.h"
+
+float rgba2gray(color RGBA)
+{
+    return ((RGBA[0] + RGBA[1] + RGBA[2]) / 3.0) * RGBA[3];
+}
+
+//Technically we should have a Colormap which only includes the landmasses
+//and use another Colormap for water if we are under the minimum height.
+//Otherwise the water will not be level, since higher positions are still colored
+//into the water color.
+//But since i don't know if this is allowed or not, we'll just keep it like that.
+shader ApplyColormap(
+                       string Colormap = "//moisturemap.png",
+                       float MinimumHeight = 0.0,
+                       color HeightMap = 0.0,
+                       color MoistureMap = 0.0,
+                       output color OutputColor = 0.0
+                       )
+{
+    
+    //This variable holds the height that is used when looking up the color in the color map
+    float ColoringHeight; 
+
+    //If we are lower than the fluid threshold (MinimumHeight) we set ColoringHeight to 1.
+    //That way we will look at the bottom row in the color map    
+    if(rgba2gray(HeightMap) <= MinimumHeight){
+        ColoringHeight = 1.0;
+    }
+    
+    //Invert the heightmap value since the texture function has the 0 coordinate at the top
+    else{
+        ColoringHeight = 1 - rgba2gray(HeightMap);
+    }
+    
+    //File, x coordinate, y coordinate (0,0 is upper left corner) (1,1 is bottom right corner)
+    OutputColor = texture(Colormap, rgba2gray(MoistureMap), ColoringHeight);
+}
