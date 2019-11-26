@@ -1,0 +1,23 @@
+float rgba2gray(color RGBA)
+{
+    return ((RGBA[0] + RGBA[1] + RGBA[2]) / 3.0) * RGBA[3];
+}
+
+//Configured MyDisplacement with Height parameters for the assignment
+shader MyDisplacementWithHeight(
+        color HeightMap = 0.0,
+        normal Normal = 0.0,
+        float MinimumHeight = 0.0,
+        float Scale = 0.05,
+        output vector Displacement = 0.0,
+    )
+{   
+
+    float Height = rgba2gray(HeightMap);
+    
+    if(Height <= MinimumHeight){
+        Height = MinimumHeight;
+    }
+
+    Displacement = normalize(Normal) * Height * Scale;
+}
