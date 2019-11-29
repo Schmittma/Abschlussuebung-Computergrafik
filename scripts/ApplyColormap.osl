@@ -25,15 +25,19 @@ shader ApplyColormap(
         //Invert since the texture() function assigned the zeropoint to the upper left corner
         float ColoringHeight = 1-rgba2gray(HeightMap);
         
-        //Map [0; MinimumHeight] to [0; 1]
+        //We need to Map [0; MinimumHeight] to [0; 1]
+        //But since we inverted Coloringheight with "1-", 
+        //we need to actually map [1-0;1-MinimumHeight] to [1-0; 1-1]
+        
+        // y = newValue | x = oldvalue | x_(min/man) = ranges of old value | y_(min/man) = ranges of new value
         // y = (x - x_min) * ((y_max - y_min) / (x_max - x_min) ) + y_min
-        ColoringHeight = ColoringHeight * (1/ MinimumHeight);
+        ColoringHeight = (ColoringHeight - 1) * ((0-1)/ ((1-MinimumHeight) - 1)) + 1;
         
         //Safety check if MinimumHeight was bigger than 1
-        if(ColoringHeight > 1){
-            ColoringHeight = 1;
-        }
-        OutputColor = texture(Colormap_water, rgba2gray(MoistureMap), ColoringHeight);
+       // if(ColoringHeight > 1){
+        //    ColoringHeight = 1;
+        //}
+        OutsputColor = texture(Colormap_water, 0, ColoringHeight);
     }
     
     //Use the land colormap and map the height which has the range ]MinimumHeight; 1]
@@ -42,9 +46,13 @@ shader ApplyColormap(
         //Invert since the texture() function assigned the zeropoint to the upper left corner
         float ColoringHeight = 1 - rgba2gray(HeightMap);
         
-        //Map ]MinimumHeight; 1] to [0; 1]
+        //We need to Map ]MinimumHeight; 1] to [0; 1]
+        //But since we inverted Coloringheight with "1-", 
+        //we need to actually map ]1-MinimumHeight; 1-1] to [1-0; 1-1]
+         
+        // y = newValue | x = oldvalue | x_(min/man) = ranges of old value | y_(min/man) = ranges of new value
         // y = (x - x_min) * ((y_max - y_min) / (x_max - x_min) ) + y_min
-        ColoringHeight = (ColoringHeight - MinimumHeight) * (1 / (1 - MinimumHeight));
+        ColoringHeight = (ColoringHeight - (1-MinimumHeight)) * ((0-1)/ (0-(1-MinimumHeight))) + 1;
         //OutputColor = texture(Colormap_land, rgba2gray(MoistureMap), ColoringHeight);
         OutputColor = texture(Colormap_land, rgba2gray(MoistureMap), ColoringHeight);
     }   
