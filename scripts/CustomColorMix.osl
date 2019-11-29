@@ -4,7 +4,7 @@ float rgba2gray(color RGBA)
 }
 
 // This shader takes the input of 2 images. When the given height map 
-// exceeds the threshold, given by "MinimumHeight" Color1 shall be used as output
+// is greater than the threshold, given by "MinimumHeight" Color1 shall be used as output
 // otherwise Color2 shall be used as output.
 
 // This is a special script for the given assignment, since the heightmap and the minimum height

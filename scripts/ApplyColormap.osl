@@ -1,38 +1,52 @@
-#include "stdosl.h"
-
 float rgba2gray(color RGBA)
 {
     return ((RGBA[0] + RGBA[1] + RGBA[2]) / 3.0) * RGBA[3];
 }
 
-//Technically we should have a Colormap which only includes the landmasses
-//and use another Colormap for water if we are under the minimum height.
-//Otherwise the water will not be level, since higher positions are still colored
-//into the water color.
-//But since i don't know if this is allowed or not, we'll just keep it like that.
+// We use 2 Color maps in here (one for landmass and one for water) since we don't know where the
+// combined colormap would have its water proportion. 
+// With a combined map we couldn't visualize the water depth since we need to map the height which has
+// the range [0;1] to the range of the water portion of the color map (Which we might not know).
+
 shader ApplyColormap(
-                       string Colormap = "//moisturemap.png",
+                       string Colormap_land = "//moisturemap.png",
+                       string Colormap_water = "//watermap.png",
                        float MinimumHeight = 0.0,
                        color HeightMap = 0.0,
                        color MoistureMap = 0.0,
                        output color OutputColor = 0.0
                        )
 {
-    
-    //This variable holds the height that is used when looking up the color in the color map
-    float ColoringHeight; 
 
-    //If we are lower than the fluid threshold (MinimumHeight) we set ColoringHeight to 1.
-    //That way we will look at the bottom row in the color map    
+    //Use the water colormap and map the height which has the range [0; MinimumHeight]
+    //to the range [0; 1] to utilize the full scale of the Watercolor map.
     if(rgba2gray(HeightMap) <= MinimumHeight){
-        ColoringHeight = 1.0;
+        
+        //Invert since the texture() function assigned the zeropoint to the upper left corner
+        float ColoringHeight = 1-rgba2gray(HeightMap);
+        
+        //Map [0; MinimumHeight] to [0; 1]
+        // y = (x - x_min) * ((y_max - y_min) / (x_max - x_min) ) + y_min
+        ColoringHeight = ColoringHeight * (1/ MinimumHeight);
+        
+        //Safety check if MinimumHeight was bigger than 1
+        if(ColoringHeight > 1){
+            ColoringHeight = 1;
+        }
+        //OutputColor = texture(Colormap_water, rgba2gray(MoistureMap), ColoringHeight);
+        OutputColor = texture(Colormap_water, 0, ColoringHeight);
     }
     
-    //Invert the heightmap value since the texture function has the 0 coordinate at the top
+    //Use the land colormap and map the height which has the range ]MinimumHeight; 1]
+    //to the range [0; 1] to utilize the full scale of the Landcolor map.
     else{
-        ColoringHeight = 1 - rgba2gray(HeightMap);
-    }
-    
-    //File, x coordinate, y coordinate (0,0 is upper left corner) (1,1 is bottom right corner)
-    OutputColor = texture(Colormap, rgba2gray(MoistureMap), ColoringHeight);
+        //Invert since the texture() function assigned the zeropoint to the upper left corner
+        float ColoringHeight = 1 - rgba2gray(HeightMap);
+        
+        //Map ]MinimumHeight; 1] to [0; 1]
+        // y = (x - x_min) * ((y_max - y_min) / (x_max - x_min) ) + y_min
+        ColoringHeight = (ColoringHeight - MinimumHeight) * (1 / (1 - MinimumHeight));
+        //OutputColor = texture(Colormap_land, rgba2gray(MoistureMap), ColoringHeight);
+        OutputColor = texture(Colormap_land, 0, ColoringHeight);
+    }   
 }
