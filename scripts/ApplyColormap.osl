@@ -33,8 +33,7 @@ shader ApplyColormap(
         if(ColoringHeight > 1){
             ColoringHeight = 1;
         }
-        //OutputColor = texture(Colormap_water, rgba2gray(MoistureMap), ColoringHeight);
-        OutputColor = texture(Colormap_water, 0, ColoringHeight);
+        OutputColor = texture(Colormap_water, rgba2gray(MoistureMap), ColoringHeight);
     }
     
     //Use the land colormap and map the height which has the range ]MinimumHeight; 1]
@@ -47,6 +46,6 @@ shader ApplyColormap(
         // y = (x - x_min) * ((y_max - y_min) / (x_max - x_min) ) + y_min
         ColoringHeight = (ColoringHeight - MinimumHeight) * (1 / (1 - MinimumHeight));
         //OutputColor = texture(Colormap_land, rgba2gray(MoistureMap), ColoringHeight);
-        OutputColor = texture(Colormap_land, 0, ColoringHeight);
+        OutputColor = texture(Colormap_land, rgba2gray(MoistureMap), ColoringHeight);
     }   
 }
