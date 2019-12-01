@@ -9,7 +9,7 @@ float rgba2gray(color RGBA)
 // the range [0;1] to the range of the water portion of the color map (Which we might not know).
 
 shader ApplyColormap(
-                       string Colormap_land = "//moisturemap.png",
+                       string Colormap_land = "//landmap.png",
                        string Colormap_water = "//watermap.png",
                        float MinimumHeight = 0.0,
                        color HeightMap = 0.0,
@@ -37,7 +37,7 @@ shader ApplyColormap(
        // if(ColoringHeight > 1){
         //    ColoringHeight = 1;
         //}
-        OutsputColor = texture(Colormap_water, 0, ColoringHeight);
+        OutputColor = texture(Colormap_water, 0, ColoringHeight);
     }
     
     //Use the land colormap and map the height which has the range ]MinimumHeight; 1]
