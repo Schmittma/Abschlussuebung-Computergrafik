@@ -1,4 +1,2 @@
 # Abschlussuebung-Computergrafik
-Abschlussarbeit des Moduls "Grundlagen Computergrafik". Aufgabenstellung kann in Moodle vorgefunden werden.
-
-Die Bearbeiter dieses Projekts sind: Moritz Flüchter, Marleen Suhm, Marius Schmitt
+Abschlussarbeit des Moduls "Grundlagen Computergrafik" von Moritz Flüchter, Marleen Suhm, Marius Schmitt
