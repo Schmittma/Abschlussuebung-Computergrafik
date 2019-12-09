@@ -28,7 +28,7 @@ ds_height = 1080
 ds_noise = 128
 ds_corner_max = 256
 ds_equal_corners = False
-heightmap_path = "Heightmap{}x{}.png".format(ds_width, ds_height)
+heightmap_path = "heightmap.png"
 
 import numpy
 import random
@@ -228,8 +228,8 @@ class DiamondSquare:
             Distance from center to outer points is step_size / 2
 
         Args:
-            y (int): x coordinate of center.
-            x (int): y coordinate of center.
+            y (int): x coordinate of upper left corner.
+            x (int): y coordinate of upper left corner.
 
         """
         # Collects values of outer points by using the vectors from square pattern
