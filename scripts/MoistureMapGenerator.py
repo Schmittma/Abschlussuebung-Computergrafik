@@ -7,11 +7,18 @@ import os
 def map_number(input, ir_min, ir_max, or_min, or_max):
     return (input - ir_min) * ((or_max - or_min) / (ir_max - ir_min) ) + or_min   
 
-size = 1000, 1000     # Sepcify the default size of the image
+heightmap_path = "//textures\\heightmap.png"   # Path to the heightmap to determine the size of the image
 scale = 5           # The scale factor of the vectors (Bigger means zoomed out of the noise)
+
+size = 500,500 # Default image size
+heightmap = bpy.data.images.load(heightmap_path) #Load the heightmap to determine the size of the moisture map
+size = heightmap.size
+
+
 image = bpy.data.images.new(("MoistureMap"), width=size[0], height=size[1]) #Create the image for the moisture map that will be saved
 pixels = []         # Generate an array of pixels, which will hold the color of each pixel
 noisevalues = []    # array that holds the noisevalue for every pixel
+
 
  
 print("Pixels to edit: " + str(size[0] * size[1]))
@@ -59,7 +66,7 @@ print("Start saving image...")
 
 # Override the image pixels with the generated pixels and save the file as png
 image.pixels = pixels
-image.filepath_raw = "//moisturemap.png"
+image.filepath_raw = "//textures/moisturemap.png"
 image.file_format = "PNG"
 image.save()
 
